@@ -7,6 +7,7 @@ const nextConfig: NextConfig = {
   typescript: {
     ignoreBuildErrors: true,
   },
+  output: 'standalone',
   images: {
     remotePatterns: [
       {
@@ -14,6 +15,9 @@ const nextConfig: NextConfig = {
         hostname: "**",
       },
     ],
+  },
+  experimental: {
+    optimizePackageImports: ['lucide-react', '@radix-ui/react-select'],
   },
 };
 
