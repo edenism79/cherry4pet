@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 import { useRouter } from 'next/navigation'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
@@ -15,6 +15,17 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select'
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '@/components/ui/dialog'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { ImageUploader } from './ImageUploader'
+import { Upload, X } from 'lucide-react'
 
 interface Section {
   id: string
@@ -49,6 +60,11 @@ const SECTION_NAMES: Record<string, string> = {
 export function SectionEditor({ section, userRole }: SectionEditorProps) {
   const router = useRouter()
   const [isLoading, setIsLoading] = useState(false)
+  const [isDialogOpen, setIsDialogOpen] = useState(false)
+  const [mediaAssets, setMediaAssets] = useState<any[]>([])
+  const [isUploading, setIsUploading] = useState(false)
+  const [dragActive, setDragActive] = useState(false)
+  const fileInputRef = useRef<HTMLInputElement>(null)
   const [formData, setFormData] = useState({
     title: section.title || '',
     subtitle: section.subtitle || '',
@@ -61,6 +77,99 @@ export function SectionEditor({ section, userRole }: SectionEditorProps) {
 
   const isReadOnly = userRole === 'viewer'
   const sectionName = SECTION_NAMES[section.section_key] || section.section_key
+
+  const MAX_FILE_SIZE = 5 * 1024 * 1024 // 5MB
+  const ALLOWED_TYPES = ['image/png', 'image/jpeg', 'image/jpg', 'image/webp', 'image/svg+xml']
+
+  const fetchMediaAssets = async () => {
+    try {
+      const response = await fetch('/api/admin/media')
+      if (response.ok) {
+        const data = await response.json()
+        setMediaAssets(data)
+      }
+    } catch (error) {
+      console.error('Error fetching media assets:', error)
+    }
+  }
+
+  const handleUploadComplete = () => {
+    fetchMediaAssets()
+    toast.success('이미지가 업로드되었습니다. 미디어 라이브러리에서 선택해주세요.')
+  }
+
+  const handleSelectMedia = (url: string) => {
+    setFormData({ ...formData, image_url: url })
+    setIsDialogOpen(false)
+    toast.success('이미지가 선택되었습니다')
+  }
+
+  const handleDrag = (e: React.DragEvent) => {
+    e.preventDefault()
+    e.stopPropagation()
+    if (e.type === 'dragenter' || e.type === 'dragover') {
+      setDragActive(true)
+    } else if (e.type === 'dragleave') {
+      setDragActive(false)
+    }
+  }
+
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault()
+    e.stopPropagation()
+    setDragActive(false)
+
+    if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+      handleFileUpload(e.dataTransfer.files[0])
+    }
+  }
+
+  const handleFileUpload = async (file: File) => {
+    // Validate file type
+    if (!ALLOWED_TYPES.includes(file.type)) {
+      toast.error('지원하지 않는 파일 형식입니다. PNG, JPG, JPEG, WebP, SVG만 가능합니다.')
+      return
+    }
+
+    // Validate file size
+    if (file.size > MAX_FILE_SIZE) {
+      toast.error('파일 크기는 5MB 이하여야 합니다.')
+      return
+    }
+
+    setIsUploading(true)
+
+    try {
+      const formDataToUpload = new FormData()
+      formDataToUpload.append('file', file)
+      formDataToUpload.append('alt_text', `${sectionName} 이미지`)
+
+      const response = await fetch('/api/admin/media/upload', {
+        method: 'POST',
+        body: formDataToUpload,
+      })
+
+      if (!response.ok) {
+        const error = await response.json()
+        throw new Error(error.error || '업로드 실패')
+      }
+
+      const data = await response.json()
+      setFormData({ ...formData, image_url: data.file_url })
+      toast.success('이미지가 업로드되었습니다')
+    } catch (error) {
+      console.error('Error uploading image:', error)
+      toast.error(error instanceof Error ? error.message : '이미지 업로드 중 오류가 발생했습니다')
+    } finally {
+      setIsUploading(false)
+    }
+  }
+
+  const handleFileInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      handleFileUpload(e.target.files[0])
+    }
+  }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -151,27 +260,131 @@ export function SectionEditor({ section, userRole }: SectionEditorProps) {
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor={`image-${section.id}`}>이미지 URL</Label>
-            <Input
-              id={`image-${section.id}`}
-              value={formData.image_url}
-              onChange={(e) =>
-                setFormData({ ...formData, image_url: e.target.value })
-              }
-              disabled={isReadOnly}
-              placeholder="https://..."
-              type="url"
-            />
-            {formData.image_url && (
-              <div className="mt-2">
-                <img
-                  src={formData.image_url}
-                  alt="Preview"
-                  className="max-w-xs rounded-lg border"
-                  onError={(e) => {
-                    e.currentTarget.src = '/placeholder/hero-pet.jpg'
-                  }}
+            <Label htmlFor={`image-${section.id}`}>이미지</Label>
+
+            {!formData.image_url ? (
+              <div
+                className={`border-2 border-dashed rounded-lg p-8 text-center cursor-pointer transition-colors ${
+                  dragActive
+                    ? 'border-primary bg-primary/5'
+                    : 'border-muted-foreground/25 hover:border-primary/50'
+                } ${isReadOnly ? 'opacity-50 cursor-not-allowed' : ''}`}
+                onDragEnter={!isReadOnly ? handleDrag : undefined}
+                onDragLeave={!isReadOnly ? handleDrag : undefined}
+                onDragOver={!isReadOnly ? handleDrag : undefined}
+                onDrop={!isReadOnly ? handleDrop : undefined}
+                onClick={() => !isReadOnly && fileInputRef.current?.click()}
+              >
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  className="hidden"
+                  accept={ALLOWED_TYPES.join(',')}
+                  onChange={handleFileInputChange}
+                  disabled={isReadOnly || isUploading}
                 />
+                <Upload className="mx-auto h-12 w-12 text-muted-foreground mb-4" />
+                {isUploading ? (
+                  <p className="text-sm font-medium mb-1">업로드 중...</p>
+                ) : (
+                  <>
+                    <p className="text-sm font-medium mb-1">
+                      클릭하거나 파일을 드래그하여 업로드
+                    </p>
+                    <p className="text-xs text-muted-foreground">
+                      PNG, JPG, JPEG, WebP, SVG (최대 5MB)
+                    </p>
+                  </>
+                )}
+              </div>
+            ) : (
+              <div className="space-y-2">
+                <div className="relative rounded-lg overflow-hidden border">
+                  <img
+                    src={formData.image_url}
+                    alt="Preview"
+                    className="w-full max-h-64 object-contain bg-muted"
+                    onError={(e) => {
+                      e.currentTarget.src = '/placeholder/hero-pet.jpg'
+                    }}
+                  />
+                  {!isReadOnly && (
+                    <Button
+                      size="sm"
+                      variant="destructive"
+                      className="absolute top-2 right-2"
+                      onClick={() => setFormData({ ...formData, image_url: '' })}
+                      type="button"
+                    >
+                      <X className="h-4 w-4" />
+                    </Button>
+                  )}
+                </div>
+
+                {!isReadOnly && (
+                  <div className="flex gap-2">
+                    <Button
+                      type="button"
+                      variant="outline"
+                      className="flex-1"
+                      onClick={() => fileInputRef.current?.click()}
+                      disabled={isUploading}
+                    >
+                      <Upload className="h-4 w-4 mr-2" />
+                      이미지 변경
+                    </Button>
+                    <input
+                      ref={fileInputRef}
+                      type="file"
+                      className="hidden"
+                      accept={ALLOWED_TYPES.join(',')}
+                      onChange={handleFileInputChange}
+                      disabled={isUploading}
+                    />
+                    <Dialog open={isDialogOpen} onOpenChange={(open) => {
+                      setIsDialogOpen(open)
+                      if (open) fetchMediaAssets()
+                    }}>
+                      <DialogTrigger asChild>
+                        <Button type="button" variant="outline" className="flex-1">
+                          미디어 라이브러리
+                        </Button>
+                      </DialogTrigger>
+                      <DialogContent className="max-w-4xl max-h-[80vh] overflow-y-auto">
+                        <DialogHeader>
+                          <DialogTitle>미디어 라이브러리</DialogTitle>
+                          <DialogDescription>
+                            기존에 업로드된 이미지를 선택하세요
+                          </DialogDescription>
+                        </DialogHeader>
+                        {mediaAssets.length === 0 ? (
+                          <div className="text-center py-12 text-muted-foreground">
+                            등록된 이미지가 없습니다.
+                          </div>
+                        ) : (
+                          <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                            {mediaAssets.map((asset) => (
+                              <div
+                                key={asset.id}
+                                className="border rounded-lg overflow-hidden cursor-pointer hover:border-primary transition-colors"
+                                onClick={() => handleSelectMedia(asset.file_url)}
+                              >
+                                <img
+                                  src={asset.file_url}
+                                  alt={asset.alt_text || asset.file_name}
+                                  className="w-full h-40 object-cover"
+                                />
+                                <div className="p-2 text-xs truncate">
+                                  {asset.file_name}
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        )}
+                      </DialogContent>
+                    </Dialog>
+                  </div>
+                )}
               </div>
             )}
           </div>
