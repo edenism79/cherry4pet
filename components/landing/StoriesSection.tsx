@@ -1,6 +1,8 @@
+'use client'
+
 import { ArrowRight, Calendar } from 'lucide-react'
 import { Button } from '@/components/ui/button'
-import Link from 'next/link'
+import { useComingSoon, ComingSoonDialog } from "@/components/common/ComingSoonDialog"
 
 interface Story {
   id: string
@@ -16,6 +18,7 @@ interface StoriesSectionProps {
 }
 
 export function StoriesSection({ stories = [] }: StoriesSectionProps) {
+  const { showComingSoon, setShowComingSoon, handleLinkClick } = useComingSoon()
   // Default stories if none provided
   const defaultStories = [
     {
@@ -48,32 +51,36 @@ export function StoriesSection({ stories = [] }: StoriesSectionProps) {
   const displayStories = stories.length > 0 ? stories.slice(0, 3) : defaultStories
 
   return (
-    <section className="py-20 bg-background">
-      <div className="container mx-auto px-4">
-        <div className="flex items-end justify-between mb-12">
-          <div>
-            <h2 className="text-3xl md:text-4xl font-bold mb-4">
-              우리가 만든 변화의 이야기
-            </h2>
-            <p className="text-lg text-muted-foreground">
-              함께 만들어가는 감동적인 순간들
-            </p>
-          </div>
-          <Link href="/stories">
-            <Button variant="outline" className="hidden md:inline-flex">
+    <>
+      <ComingSoonDialog open={showComingSoon} onOpenChange={setShowComingSoon} />
+      <section className="py-20 bg-background">
+        <div className="container mx-auto px-4">
+          <div className="flex items-end justify-between mb-12">
+            <div>
+              <h2 className="text-3xl md:text-4xl font-bold mb-4">
+                우리가 만든 변화의 이야기
+              </h2>
+              <p className="text-lg text-muted-foreground">
+                함께 만들어가는 감동적인 순간들
+              </p>
+            </div>
+            <Button
+              variant="outline"
+              className="hidden md:inline-flex"
+              onClick={(e) => handleLinkClick(e, '/stories')}
+            >
               전체 보기
               <ArrowRight className="ml-2 h-4 w-4" />
             </Button>
-          </Link>
-        </div>
+          </div>
 
-        <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-          {displayStories.map((story) => (
-            <Link
-              key={story.id}
-              href={story.link_url || '#'}
-              className="group block"
-            >
+          <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+            {displayStories.map((story) => (
+              <div
+                key={story.id}
+                className="group block cursor-pointer"
+                onClick={(e: any) => handleLinkClick(e, story.link_url)}
+              >
               <div className="bg-card rounded-xl overflow-hidden border shadow-sm hover:shadow-lg transition-all">
                 <div className="aspect-video overflow-hidden bg-muted">
                   <img
@@ -103,19 +110,21 @@ export function StoriesSection({ stories = [] }: StoriesSectionProps) {
                   </div>
                 </div>
               </div>
-            </Link>
+            </div>
           ))}
         </div>
 
         <div className="mt-8 text-center md:hidden">
-          <Link href="/stories">
-            <Button variant="outline">
-              전체 보기
-              <ArrowRight className="ml-2 h-4 w-4" />
-            </Button>
-          </Link>
+          <Button
+            variant="outline"
+            onClick={(e) => handleLinkClick(e, '/stories')}
+          >
+            전체 보기
+            <ArrowRight className="ml-2 h-4 w-4" />
+          </Button>
         </div>
       </div>
     </section>
+    </>
   )
 }

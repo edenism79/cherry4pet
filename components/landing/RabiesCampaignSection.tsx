@@ -1,5 +1,8 @@
+'use client'
+
 import { Users, Globe, Heart, Stethoscope } from 'lucide-react'
 import { Button } from '@/components/ui/button'
+import { useComingSoon, ComingSoonDialog } from "@/components/common/ComingSoonDialog"
 
 interface RabiesCampaignSectionProps {
   data?: {
@@ -13,7 +16,28 @@ interface RabiesCampaignSectionProps {
 }
 
 export function RabiesCampaignSection({ data }: RabiesCampaignSectionProps) {
+  const { showComingSoon, setShowComingSoon, handleLinkClick } = useComingSoon()
+
   if (!data) return null
+
+  // Extract style settings from extra field
+  const titleColor = data.extra?.title_color || '#1F2937'
+  const titleFont = data.extra?.title_font || 'Pretendard'
+  const titleSize = data.extra?.title_size || '40'
+  const subtitleColor = data.extra?.subtitle_color || '#1F2937'
+  const subtitleSize = data.extra?.subtitle_size || '20'
+  const bodyColor = data.extra?.body_color || '#374151'
+  const backgroundImage = data.extra?.background_image
+  const backgroundOpacity = data.extra?.background_opacity || 100
+
+  // Debug: Log background settings
+  if (typeof window !== 'undefined') {
+    console.log('🎨 Rabies Campaign Background Settings:')
+    console.log('  - Background Image:', backgroundImage || '(없음)')
+    console.log('  - Background Opacity:', backgroundOpacity)
+    console.log('  - Has Image?', !!backgroundImage)
+    console.log('  - Full Extra:', data.extra)
+  }
 
   const stats = [
     {
@@ -39,8 +63,35 @@ export function RabiesCampaignSection({ data }: RabiesCampaignSectionProps) {
   ]
 
   return (
-    <section className="py-20 bg-gradient-to-br from-blue-50 via-white to-orange-50">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <>
+      <ComingSoonDialog open={showComingSoon} onOpenChange={setShowComingSoon} />
+      <section className="py-20 relative overflow-hidden" style={{ minHeight: '800px' }}>
+        {/* Background Image with Opacity */}
+        {backgroundImage && backgroundImage.trim() !== '' ? (
+          <>
+            {/* Background color layer */}
+            <div className="absolute inset-0 z-0 bg-gradient-to-br from-blue-50 via-white to-orange-50" />
+            {/* Background image layer */}
+            <div
+              className="absolute inset-0 z-0"
+              style={{
+                backgroundImage: `url(${backgroundImage})`,
+                backgroundSize: 'contain',
+                backgroundPosition: 'center',
+                backgroundRepeat: 'no-repeat',
+                opacity: backgroundOpacity / 100,
+              }}
+              data-testid="background-image"
+            />
+            {/* Overlay for better text readability */}
+            <div className="absolute inset-0 z-0 bg-gradient-to-br from-white/30 via-transparent to-white/30" />
+          </>
+        ) : (
+          <div className="absolute inset-0 z-0 bg-gradient-to-br from-blue-50 via-white to-orange-50" />
+        )}
+
+        {/* Content */}
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         {/* Header */}
         <div className="text-center mb-16">
           <div className="inline-block px-6 py-2 bg-cherry-red/10 rounded-full mb-6">
@@ -48,10 +99,20 @@ export function RabiesCampaignSection({ data }: RabiesCampaignSectionProps) {
               🎉 {data.title}
             </span>
           </div>
-          <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
+          <h2
+            className="font-bold mb-6"
+            style={{
+              color: subtitleColor,
+              fontFamily: titleFont,
+              fontSize: `${titleSize}px`
+            }}
+          >
             {data.subtitle}
           </h2>
-          <p className="text-lg md:text-xl text-gray-700 max-w-4xl mx-auto leading-relaxed">
+          <p
+            className="text-lg md:text-xl max-w-4xl mx-auto leading-relaxed"
+            style={{ color: bodyColor }}
+          >
             {data.body}
           </p>
         </div>
@@ -97,25 +158,51 @@ export function RabiesCampaignSection({ data }: RabiesCampaignSectionProps) {
 
         {/* Event Info */}
         {data.extra?.launch_date && (
-          <div className="bg-gradient-to-r from-cherry-red to-cherry-deep text-white rounded-2xl p-8 md:p-12 mb-12">
-            <h3 className="text-2xl font-bold mb-6 text-center">MOU 체결식 안내</h3>
-            <div className="grid md:grid-cols-3 gap-6 text-center">
-              <div>
-                <p className="text-sm opacity-90 mb-2">일시</p>
-                <p className="font-semibold text-lg">{data.extra.launch_date}</p>
+          <div className="bg-gradient-to-r from-cherry-red to-cherry-deep text-white rounded-2xl p-6 md:p-8 mb-12">
+            <div className="flex flex-col md:flex-row gap-4 items-stretch">
+              {/* Left: Event Information (3/4 width) */}
+              <div className="flex-1 md:w-3/4 flex flex-col justify-center">
+                {/* Title */}
+                <h3 className="text-2xl md:text-3xl font-bold text-center mb-8">MOU 체결식 안내</h3>
+
+                {/* 3 Columns with equal height */}
+                <div className="grid md:grid-cols-3 gap-6 mb-6">
+                  <div className="text-center">
+                    <p className="text-base md:text-lg font-bold mb-2">일시</p>
+                    <p className="font-semibold text-base md:text-lg">{data.extra.launch_date}</p>
+                  </div>
+                  <div className="text-center">
+                    <p className="text-base md:text-lg font-bold mb-2">장소</p>
+                    <p className="font-semibold text-sm md:text-base">{data.extra.venue}</p>
+                  </div>
+                  <div className="text-center">
+                    <p className="text-base md:text-lg font-bold mb-2">주최</p>
+                    <p className="font-semibold text-base md:text-lg">{data.extra.organizer}</p>
+                  </div>
+                </div>
+
+                {/* Host */}
+                <div className="text-center">
+                  <p className="text-base md:text-lg font-bold mb-2">주관</p>
+                  <p className="font-semibold text-sm md:text-base">{data.extra.hosts}</p>
+                </div>
               </div>
-              <div>
-                <p className="text-sm opacity-90 mb-2">장소</p>
-                <p className="font-semibold">{data.extra.venue}</p>
+
+              {/* Right: Image Box (1/4 width) */}
+              <div className="md:w-1/4 flex items-stretch">
+                {data.extra?.mou_image ? (
+                  <div className="relative w-full rounded-xl overflow-hidden bg-white/10 flex items-center justify-center p-3">
+                    <img
+                      src={data.extra.mou_image}
+                      alt="MOU 체결식"
+                      className="w-full h-full object-contain"
+                      onError={(e) => {
+                        e.currentTarget.src = '/placeholder/hero-pet.jpg'
+                      }}
+                    />
+                  </div>
+                ) : null}
               </div>
-              <div>
-                <p className="text-sm opacity-90 mb-2">주최</p>
-                <p className="font-semibold">{data.extra.organizer}</p>
-              </div>
-            </div>
-            <div className="mt-6 text-center">
-              <p className="text-sm opacity-90">주관</p>
-              <p className="font-semibold">{data.extra.hosts}</p>
             </div>
           </div>
         )}
@@ -125,17 +212,16 @@ export function RabiesCampaignSection({ data }: RabiesCampaignSectionProps) {
           <Button
             size="lg"
             className="bg-white text-cherry-red hover:bg-gray-50 border-2 border-cherry-red font-bold px-12 py-6 text-lg rounded-full shadow-lg hover:shadow-xl transition-all"
-            asChild
+            onClick={(e) => handleLinkClick(e, data.cta_url)}
           >
-            <a href={data.cta_url || '#'}>
-              {data.cta_label || '캠페인 참여하기'}
-            </a>
+            {data.cta_label || '캠페인 참여하기'}
           </Button>
           <p className="mt-4 text-gray-600">
             함께 만드는 광견병 없는 아시아 🌏
           </p>
         </div>
-      </div>
-    </section>
+        </div>
+      </section>
+    </>
   )
 }

@@ -28,7 +28,7 @@ export async function PATCH(request: Request) {
 
     // Parse request body
     const body = await request.json()
-    const { id, title, subtitle, body: content, image_url, cta_label, cta_url, is_visible } = body
+    const { id, title, subtitle, body: content, image_url, cta_label, cta_url, is_visible, extra } = body
 
     if (!id) {
       return NextResponse.json({ error: 'Section ID required' }, { status: 400 })
@@ -52,6 +52,7 @@ export async function PATCH(request: Request) {
         cta_label,
         cta_url,
         is_visible,
+        extra,
         updated_at: new Date().toISOString(),
       })
       .eq('id', id)

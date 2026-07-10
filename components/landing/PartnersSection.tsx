@@ -5,10 +5,50 @@ interface PartnersSectionProps {
   partners: Partner[]
 }
 
+const PARTNER_TYPE_LABELS: Record<string, string> = {
+  'veterinary_hospital': '동물병원',
+  'veterinary_clinic': '동물클리닉',
+  'animal_shelter': '동물보호소',
+  'rescue_organization': '구조단체',
+  'welfare_organization': '동물복지단체',
+  'corporation': '일반기업',
+  'pet_company': '반려동물 기업',
+  'veterinary_association': '수의사회',
+  'animal_association': '동물단체협회',
+  'international_ngo': '국제 NGO',
+  'international_organization': '국제기구',
+  'government': '정부기관',
+  'research_institute': '연구기관',
+  'brand_sponsor': '브랜드/스폰서',
+  'media_partner': '미디어 파트너',
+  'education': '교육기관',
+  // 기존 호환성 유지
+  'hospital': '동물병원',
+  'shelter': '보호단체',
+  'company': '기업',
+  'association': '협회',
+  'international': '국제기관',
+  'brand': '브랜드',
+}
+
 export default function PartnersSection({ partners }: PartnersSectionProps) {
   const visiblePartners = partners.filter(p => p.is_visible)
 
   if (visiblePartners.length === 0) return null
+
+  const getPartnerTypeLabel = (type: string | null) => {
+    if (!type) return ''
+    if (type === 'none') return '' // "없음"일 경우 빈 문자열 반환
+    return PARTNER_TYPE_LABELS[type] || type
+  }
+
+  const getPartnerDisplayText = (partner: Partner) => {
+    // 유형이 "없음"이면 설명을 표시, 아니면 유형을 표시
+    if (partner.type === 'none') {
+      return partner.description || ''
+    }
+    return getPartnerTypeLabel(partner.type)
+  }
 
   return (
     <section className="py-20 bg-white">
@@ -44,8 +84,10 @@ export default function PartnersSection({ partners }: PartnersSectionProps) {
               <p className="text-sm font-semibold text-gray-900 text-center group-hover:text-cherry-red transition-colors">
                 {partner.name}
               </p>
-              {partner.type && (
-                <p className="text-xs text-gray-500 mt-1">{partner.type}</p>
+              {(partner.type || partner.description) && (
+                <p className="text-xs text-gray-500 mt-1">
+                  {getPartnerDisplayText(partner)}
+                </p>
               )}
             </div>
           ))}

@@ -41,17 +41,41 @@ const features = [
 export default function WhyPetSection({ data }: WhyPetSectionProps) {
   if (!data.is_visible) return null
 
+  // Extract style settings from extra field
+  const titleColor = (data.extra as any)?.title_color || '#1F2937'
+  const titleFont = (data.extra as any)?.title_font || 'Pretendard'
+  const titleSize = (data.extra as any)?.title_size || '40'
+  const subtitleColor = (data.extra as any)?.subtitle_color || '#E9415A'
+  const subtitleSize = (data.extra as any)?.subtitle_size || '20'
+  const bodyColor = (data.extra as any)?.body_color || '#6B7280'
+
   return (
     <section className="py-20 bg-white">
       <div className="container mx-auto px-4">
         <div className="text-center mb-16 space-y-4">
-          <h2 className="text-4xl md:text-5xl font-bold text-gray-900">
+          <h2
+            className="font-bold"
+            style={{
+              color: titleColor,
+              fontFamily: titleFont,
+              fontSize: `${titleSize}px`
+            }}
+          >
             {data.title}
           </h2>
-          <p className="text-xl text-cherry-red font-semibold">
+          <p
+            className="font-semibold"
+            style={{
+              color: subtitleColor,
+              fontSize: `${subtitleSize}px`
+            }}
+          >
             {data.subtitle}
           </p>
-          <p className="text-lg text-gray-600 max-w-3xl mx-auto">
+          <p
+            className="text-lg max-w-3xl mx-auto"
+            style={{ color: bodyColor }}
+          >
             {data.body}
           </p>
         </div>
