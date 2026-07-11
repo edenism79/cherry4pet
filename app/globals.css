@@ -73,6 +73,54 @@
   .text-balance {
     text-wrap: balance;
   }
+
+  /* 모바일 최적화 터치 영역 */
+  .touch-target {
+    min-height: 44px;
+    min-width: 44px;
+  }
+
+  /* 안전한 영역 패딩 (노치 대응) */
+  .safe-top {
+    padding-top: env(safe-area-inset-top);
+  }
+
+  .safe-bottom {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+
+  /* 스크롤 스냅 */
+  .snap-scroll {
+    scroll-snap-type: x mandatory;
+    scroll-behavior: smooth;
+  }
+
+  .snap-center {
+    scroll-snap-align: center;
+  }
+
+  /* 반응형 컨테이너 */
+  .container-responsive {
+    width: 100%;
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: clamp(1rem, 3vw, 2rem);
+    padding-right: clamp(1rem, 3vw, 2rem);
+    max-width: 1400px;
+  }
+
+  /* 모바일 숨김/표시 */
+  @media (max-width: 767px) {
+    .hide-mobile {
+      display: none !important;
+    }
+  }
+
+  @media (min-width: 768px) {
+    .show-mobile-only {
+      display: none !important;
+    }
+  }
 }
 
 /* Heartbeat animation */

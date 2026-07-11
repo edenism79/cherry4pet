@@ -100,42 +100,40 @@ export default function HeroSection({ data }: HeroSectionProps) {
         </AlertDialogContent>
       </AlertDialog>
 
-      <section className="relative bg-gradient-to-b from-cherry-cream to-white py-20 md:py-32">
-        <div className="container mx-auto px-4">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-            <div className="space-y-8">
-              <div className="space-y-4">
+      <section className="relative bg-gradient-to-b from-cherry-cream to-white py-12 sm:py-16 md:py-24 lg:py-32">
+        <div className="container-responsive">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-12 items-center">
+            <div className="space-y-6 sm:space-y-8 order-2 lg:order-1">
+              <div className="space-y-3 sm:space-y-4">
                 <h1
-                  className="font-bold leading-tight"
+                  className="font-bold leading-tight text-display-md md:text-display-lg lg:text-display-xl"
                   style={{
                     color: titleColor,
                     fontFamily: titleFont,
-                    fontSize: `${titleSize}px`
                   }}
                 >
                   {data.title}
                 </h1>
                 <p
-                  className="font-semibold"
+                  className="font-semibold text-heading-md md:text-heading-lg"
                   style={{
                     color: subtitleColor,
-                    fontSize: `${subtitleSize}px`
                   }}
                 >
                   {data.subtitle}
                 </p>
                 <p
-                  className="text-lg leading-relaxed"
+                  className="text-body-md md:text-body-lg leading-relaxed"
                   style={{ color: bodyColor }}
                 >
                   {data.body}
                 </p>
               </div>
-              <div className="flex flex-col sm:flex-row gap-4">
+              <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
                 {data.cta_label && data.cta_url && (
                   <Button
                     size="lg"
-                    className="bg-cherry-red hover:bg-cherry-deep text-white font-semibold px-8 py-6 text-lg rounded-full"
+                    className="bg-cherry-red hover:bg-cherry-deep text-white font-semibold px-6 sm:px-8 py-5 sm:py-6 text-base sm:text-lg rounded-full touch-target shadow-lg hover:shadow-xl transition-all"
                     onClick={(e) => handleCtaClick(e, data.cta_url!)}
                   >
                     {data.cta_label}
@@ -145,7 +143,7 @@ export default function HeroSection({ data }: HeroSectionProps) {
                   <Button
                     size="lg"
                     variant="outline"
-                    className="border-cherry-red text-cherry-red hover:bg-cherry-red hover:text-white font-semibold px-8 py-6 text-lg rounded-full"
+                    className="border-2 border-cherry-red text-cherry-red hover:bg-cherry-red hover:text-white font-semibold px-6 sm:px-8 py-5 sm:py-6 text-base sm:text-lg rounded-full touch-target transition-all"
                     onClick={(e) => handleCtaClick(e, data.extra.cta2_url as string)}
                   >
                     {data.extra.cta2_label as string}
@@ -153,18 +151,19 @@ export default function HeroSection({ data }: HeroSectionProps) {
                 )}
               </div>
             </div>
-            <div className="relative h-[400px] md:h-[600px] rounded-3xl overflow-hidden shadow-2xl bg-gradient-to-br from-cherry-cream to-white">
+            <div className="relative h-[300px] sm:h-[400px] md:h-[500px] lg:h-[600px] rounded-2xl sm:rounded-3xl overflow-hidden shadow-xl md:shadow-2xl bg-gradient-to-br from-cherry-cream to-white order-1 lg:order-2">
               {data.image_url ? (
                 <Image
                   src={data.image_url}
                   alt={data.title || "Hero image"}
                   fill
-                  className="object-contain"
+                  className="object-contain p-4 sm:p-6"
                   priority
+                  sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 700px"
                 />
               ) : (
                 <div className="w-full h-full bg-gradient-to-br from-cherry-pink to-cherry-red flex items-center justify-center">
-                  <p className="text-white text-2xl font-bold">CHERRY for PET</p>
+                  <p className="text-white text-xl sm:text-2xl font-bold text-center px-4">CHERRY for PET</p>
                 </div>
               )}
             </div>

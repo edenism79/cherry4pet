@@ -50,52 +50,50 @@ export default function WhyPetSection({ data }: WhyPetSectionProps) {
   const bodyColor = (data.extra as any)?.body_color || '#6B7280'
 
   return (
-    <section className="py-20 bg-white">
-      <div className="container mx-auto px-4">
-        <div className="text-center mb-16 space-y-4">
+    <section className="py-12 sm:py-16 md:py-20 bg-white">
+      <div className="container-responsive">
+        <div className="text-center mb-10 sm:mb-12 md:mb-16 space-y-3 sm:space-y-4">
           <h2
-            className="font-bold"
+            className="font-bold text-display-sm md:text-display-md lg:text-display-lg"
             style={{
               color: titleColor,
               fontFamily: titleFont,
-              fontSize: `${titleSize}px`
             }}
           >
             {data.title}
           </h2>
           <p
-            className="font-semibold"
+            className="font-semibold text-heading-md md:text-heading-lg"
             style={{
               color: subtitleColor,
-              fontSize: `${subtitleSize}px`
             }}
           >
             {data.subtitle}
           </p>
           <p
-            className="text-lg max-w-3xl mx-auto"
+            className="text-body-md md:text-body-lg max-w-3xl mx-auto px-4"
             style={{ color: bodyColor }}
           >
             {data.body}
           </p>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 md:gap-8">
           {features.map((feature, index) => {
             const Icon = feature.icon
             return (
               <div
                 key={index}
-                className="group p-8 rounded-2xl border border-gray-200 hover:border-cherry-red hover:shadow-lg transition-all duration-300"
+                className="group p-6 sm:p-8 rounded-xl sm:rounded-2xl border-2 border-gray-200 hover:border-cherry-red hover:shadow-lg active:scale-[0.98] transition-all duration-300"
               >
                 <div className="mb-4">
-                  <div className="w-14 h-14 rounded-full bg-cherry-cream flex items-center justify-center group-hover:bg-cherry-red group-hover:scale-110 transition-all duration-300">
-                    <Icon className="w-7 h-7 text-cherry-red group-hover:text-white transition-colors" />
+                  <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-full bg-cherry-cream flex items-center justify-center group-hover:bg-cherry-red group-hover:scale-110 transition-all duration-300">
+                    <Icon className="w-6 h-6 sm:w-7 sm:h-7 text-cherry-red group-hover:text-white transition-colors" />
                   </div>
                 </div>
-                <h3 className="text-xl font-bold text-gray-900 mb-2">
+                <h3 className="text-lg sm:text-xl font-bold text-gray-900 mb-2">
                   {feature.title}
                 </h3>
-                <p className="text-gray-600">
+                <p className="text-sm sm:text-base text-gray-600 leading-relaxed">
                   {feature.description}
                 </p>
               </div>

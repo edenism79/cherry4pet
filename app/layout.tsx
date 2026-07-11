@@ -1,13 +1,37 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "sonner";
 
 const inter = Inter({ subsets: ["latin"] });
 
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 5,
+  userScalable: true,
+  themeColor: '#E9415A',
+}
+
 export const metadata: Metadata = {
   title: "CHERRY for PET | 반려동물을 위한 투명한 기부 플랫폼",
   description: "사진 한 장, 작은 참여, 투명한 기부가 반려동물의 생명을 지킵니다.",
+  keywords: "반려동물, 기부, 투명한 기부, 동물 구조, 유기동물, CHERRY, 동물 보호",
+  openGraph: {
+    type: 'website',
+    locale: 'ko_KR',
+    siteName: 'CHERRY for PET',
+    title: "CHERRY for PET | 반려동물을 위한 투명한 기부 플랫폼",
+    description: "사진 한 장, 작은 참여, 투명한 기부가 반려동물의 생명을 지킵니다.",
+  },
+  robots: {
+    index: true,
+    follow: true,
+  },
+  icons: {
+    icon: '/favicon.ico',
+    apple: '/apple-touch-icon.png',
+  },
 };
 
 export default function RootLayout({

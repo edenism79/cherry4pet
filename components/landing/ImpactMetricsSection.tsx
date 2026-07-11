@@ -132,19 +132,19 @@ function AnimatedNumber({
 
   const formattedValue = formatNumber(displayValue, unit)
 
-  // Dynamic font size based on content length
+  // Dynamic font size based on content length - 모바일 최적화
   const getNumberFontSize = () => {
     const length = formattedValue.length
-    if (length > 15) return 'text-2xl md:text-3xl'
-    if (length > 10) return 'text-3xl md:text-4xl'
-    return 'text-4xl md:text-5xl'
+    if (length > 15) return 'text-lg sm:text-xl md:text-2xl lg:text-3xl'
+    if (length > 10) return 'text-xl sm:text-2xl md:text-3xl lg:text-4xl'
+    return 'text-2xl sm:text-3xl md:text-4xl lg:text-5xl'
   }
 
   const getUnitFontSize = () => {
     const length = formattedValue.length
-    if (length > 15) return 'text-lg md:text-xl'
-    if (length > 10) return 'text-xl md:text-2xl'
-    return 'text-2xl md:text-3xl'
+    if (length > 15) return 'text-sm sm:text-base md:text-lg lg:text-xl'
+    if (length > 10) return 'text-base sm:text-lg md:text-xl lg:text-2xl'
+    return 'text-lg sm:text-xl md:text-2xl lg:text-3xl'
   }
 
   return (
@@ -177,33 +177,32 @@ export function ImpactMetricsSection({ section }: ImpactMetricsSectionProps) {
   }
 
   return (
-    <section className="py-20 bg-primary text-primary-foreground">
-      <div className="container mx-auto px-4">
-        <div className="text-center mb-16">
-          <div className="inline-flex items-center gap-2 mb-4 px-4 py-2 bg-white/10 rounded-full">
-            <TrendingUp className="h-5 w-5" />
-            <span className="text-sm font-semibold">IMPACT</span>
+    <section className="py-12 sm:py-16 md:py-20 bg-primary text-primary-foreground">
+      <div className="container-responsive">
+        <div className="text-center mb-10 sm:mb-12 md:mb-16">
+          <div className="inline-flex items-center gap-2 mb-3 sm:mb-4 px-3 sm:px-4 py-1.5 sm:py-2 bg-white/10 rounded-full">
+            <TrendingUp className="h-4 w-4 sm:h-5 sm:w-5" />
+            <span className="text-xs sm:text-sm font-semibold">IMPACT</span>
           </div>
           <h2
-            className="text-3xl md:text-4xl font-bold mb-4"
+            className="text-display-sm md:text-display-md lg:text-display-lg font-bold mb-3 sm:mb-4"
             style={{ color: titleColor }}
           >
             {title}
           </h2>
           {subtitle && (
             <p
-              className="text-xl md:text-2xl font-semibold mb-2"
+              className="text-heading-md md:text-heading-lg font-semibold mb-2"
               style={{ color: subtitleColor }}
             >
               {subtitle}
             </p>
           )}
           <p
-            className="max-w-2xl mx-auto mb-6"
+            className="text-body-md md:text-body-lg max-w-2xl mx-auto mb-4 sm:mb-6 px-4"
             style={{
               color: bodyColor,
               fontFamily: bodyFont,
-              fontSize: `${bodySize}px`
             }}
           >
             {body}
@@ -213,27 +212,27 @@ export function ImpactMetricsSection({ section }: ImpactMetricsSectionProps) {
             <Button
               onClick={handleStartAnimation}
               size="lg"
-              className="bg-white text-primary hover:bg-white/95 font-extrabold shadow-lg hover:shadow-xl transition-all text-lg"
+              className="bg-white text-primary hover:bg-white/95 font-extrabold shadow-lg hover:shadow-xl active:scale-95 transition-all text-base sm:text-lg touch-target"
               style={{
                 animation: 'blink 2s ease-in-out infinite'
               }}
             >
-              <Play className="mr-2 h-6 w-6" />
+              <Play className="mr-2 h-5 w-5 sm:h-6 sm:w-6" />
               목표치 보기
             </Button>
           )}
         </div>
 
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-5 max-w-6xl mx-auto">
+        <div className="grid gap-3 sm:gap-4 md:gap-6 grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 max-w-6xl mx-auto">
           {metrics.map((metric, index) => (
             <div
               key={index}
-              className="text-center p-4 md:p-6 rounded-xl bg-white/10 backdrop-blur-sm hover:bg-white/15 transition-all duration-300 overflow-hidden"
+              className="text-center p-3 sm:p-4 md:p-6 rounded-lg sm:rounded-xl bg-white/10 backdrop-blur-sm hover:bg-white/15 active:scale-[0.98] transition-all duration-300 overflow-hidden"
               style={{
                 animation: isAnimating ? `fadeInUp 0.6s ease-out ${index * 0.1}s both` : 'none'
               }}
             >
-              <div className="min-h-[80px] md:min-h-[100px] flex items-center justify-center">
+              <div className="min-h-[60px] sm:min-h-[80px] md:min-h-[100px] flex items-center justify-center px-1">
                 <AnimatedNumber
                   value={metric.value}
                   unit={metric.unit}
@@ -242,7 +241,7 @@ export function ImpactMetricsSection({ section }: ImpactMetricsSectionProps) {
                   animationKey={animationKey}
                 />
               </div>
-              <div className="mt-3 text-sm font-medium text-primary-foreground/80">
+              <div className="mt-2 sm:mt-3 text-xs sm:text-sm font-medium text-primary-foreground/80">
                 {metric.label}
               </div>
             </div>
@@ -250,17 +249,17 @@ export function ImpactMetricsSection({ section }: ImpactMetricsSectionProps) {
         </div>
 
         {isAnimating && (
-          <div className="mt-16 text-center animate-in fade-in duration-700 delay-1000">
-            <p className="text-primary-foreground/90 font-medium mb-2">
+          <div className="mt-10 sm:mt-12 md:mt-16 text-center animate-in fade-in duration-700 delay-1000">
+            <p className="text-primary-foreground/90 font-medium mb-2 text-sm sm:text-base">
               🎯 우리의 목표
             </p>
-            <p className="text-primary-foreground/70 text-sm mb-6">
+            <p className="text-primary-foreground/70 text-xs sm:text-sm mb-4 sm:mb-6 px-4">
               여러분의 참여로 이 목표를 함께 달성해요
             </p>
             <Button
               onClick={handleStartAnimation}
               size="lg"
-              className="mt-4 bg-white text-primary hover:bg-white/95 font-bold shadow-lg hover:shadow-xl transition-all px-8 py-6 text-lg"
+              className="mt-2 sm:mt-4 bg-white text-primary hover:bg-white/95 font-bold shadow-lg hover:shadow-xl active:scale-95 transition-all px-6 sm:px-8 py-5 sm:py-6 text-base sm:text-lg touch-target"
             >
               다시 보기
             </Button>
