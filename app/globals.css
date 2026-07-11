@@ -67,11 +67,39 @@
     @apply bg-background text-foreground;
     font-feature-settings: "rlig" 1, "calt" 1;
   }
+
+  /* 한국어 텍스트 최적화 */
+  html {
+    word-break: keep-all; /* 한국어 단어 단위로 줄바꿈 */
+    word-wrap: break-word; /* 긴 단어는 줄 끝에서 줄바꿈 */
+  }
+
+  /* 제목, 본문, 설명 등 모든 텍스트에 적용 */
+  h1, h2, h3, h4, h5, h6, p, span, div, a, button, label {
+    word-break: keep-all;
+    word-wrap: break-word;
+    overflow-wrap: break-word; /* 모던 브라우저 지원 */
+  }
 }
 
 @layer utilities {
   .text-balance {
     text-wrap: balance;
+  }
+
+  /* 한국어 텍스트 줄바꿈 최적화 */
+  .korean-text {
+    word-break: keep-all;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    line-break: strict; /* 한국어 줄바꿈 규칙 엄격 적용 */
+  }
+
+  /* 긴 텍스트 블록용 (인용문, 본문 등) */
+  .text-pretty {
+    text-wrap: pretty; /* 최신 브라우저: 균형잡힌 줄바꿈 */
+    word-break: keep-all;
+    word-wrap: break-word;
   }
 
   /* 모바일 최적화 터치 영역 */

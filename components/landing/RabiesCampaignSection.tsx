@@ -65,7 +65,7 @@ export function RabiesCampaignSection({ data }: RabiesCampaignSectionProps) {
   return (
     <>
       <ComingSoonDialog open={showComingSoon} onOpenChange={setShowComingSoon} />
-      <section className="py-20 relative overflow-hidden" style={{ minHeight: '800px' }}>
+      <section className="py-12 sm:py-16 md:py-20 relative overflow-hidden" style={{ minHeight: '600px' }}>
         {/* Background Image with Opacity */}
         {backgroundImage && backgroundImage.trim() !== '' ? (
           <>
@@ -91,26 +91,25 @@ export function RabiesCampaignSection({ data }: RabiesCampaignSectionProps) {
         )}
 
         {/* Content */}
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+        <div className="container-responsive relative z-10">
         {/* Header */}
-        <div className="text-center mb-16">
-          <div className="inline-block px-6 py-2 bg-cherry-red/10 rounded-full mb-6">
-            <span className="text-cherry-red font-semibold text-sm tracking-wide uppercase">
+        <div className="text-center mb-10 sm:mb-12 md:mb-16">
+          <div className="inline-block px-4 sm:px-6 py-2 bg-cherry-red/10 rounded-full mb-4 sm:mb-6">
+            <span className="text-cherry-red font-semibold text-xs sm:text-sm tracking-wide uppercase">
               🎉 {data.title}
             </span>
           </div>
           <h2
-            className="font-bold mb-6"
+            className="font-bold mb-4 sm:mb-6 text-display-sm md:text-display-md korean-text px-4"
             style={{
               color: subtitleColor,
               fontFamily: titleFont,
-              fontSize: `${titleSize}px`
             }}
           >
             {data.subtitle}
           </h2>
           <p
-            className="text-lg md:text-xl max-w-4xl mx-auto leading-relaxed"
+            className="text-base sm:text-lg md:text-xl max-w-4xl mx-auto leading-relaxed korean-text px-4"
             style={{ color: bodyColor }}
           >
             {data.body}
@@ -119,36 +118,36 @@ export function RabiesCampaignSection({ data }: RabiesCampaignSectionProps) {
 
         {/* Quote */}
         {data.extra?.quote && (
-          <div className="bg-white rounded-2xl shadow-xl p-8 md:p-12 mb-12 border-l-4 border-cherry-red">
-            <div className="flex items-start gap-4">
-              <span className="text-6xl text-cherry-red/20 leading-none">"</span>
-              <p className="text-xl md:text-2xl text-gray-800 font-medium leading-relaxed pt-2">
+          <div className="bg-white rounded-2xl shadow-xl p-6 sm:p-8 md:p-12 mb-12 border-l-4 border-cherry-red">
+            <div className="flex items-start gap-2 sm:gap-4">
+              <span className="text-4xl sm:text-5xl md:text-6xl text-cherry-red/20 leading-none flex-shrink-0">"</span>
+              <p className="text-base sm:text-lg md:text-xl lg:text-2xl text-gray-800 font-medium leading-relaxed pt-1 sm:pt-2 korean-text">
                 {data.extra.quote}
               </p>
-              <span className="text-6xl text-cherry-red/20 leading-none self-end">"</span>
+              <span className="text-4xl sm:text-5xl md:text-6xl text-cherry-red/20 leading-none self-end flex-shrink-0">"</span>
             </div>
           </div>
         )}
 
         {/* Stats Grid */}
-        <div className="mb-12">
-          <h3 className="text-2xl font-bold text-center mb-8 text-gray-900">
+        <div className="mb-10 sm:mb-12">
+          <h3 className="text-xl sm:text-2xl font-bold text-center mb-6 sm:mb-8 text-gray-900 korean-text px-4">
             숫자로 보는 광견병의 현실
           </h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
             {stats.map((stat, index) => {
               const Icon = stat.icon
               return (
                 <div
                   key={index}
-                  className="bg-white rounded-xl p-6 shadow-lg hover:shadow-xl transition-shadow"
+                  className="bg-white rounded-xl p-5 sm:p-6 shadow-lg hover:shadow-xl transition-shadow"
                 >
-                  <div className="flex items-center justify-center w-14 h-14 bg-cherry-red/10 rounded-full mb-4 mx-auto">
-                    <Icon className="w-7 h-7 text-cherry-red" />
+                  <div className="flex items-center justify-center w-12 h-12 sm:w-14 sm:h-14 bg-cherry-red/10 rounded-full mb-3 sm:mb-4 mx-auto">
+                    <Icon className="w-6 h-6 sm:w-7 sm:h-7 text-cherry-red" />
                   </div>
                   <div className="text-center">
-                    <p className="text-sm text-gray-600 mb-2">{stat.label}</p>
-                    <p className="text-2xl font-bold text-cherry-red">{stat.value}</p>
+                    <p className="text-xs sm:text-sm text-gray-600 mb-2 korean-text">{stat.label}</p>
+                    <p className="text-lg sm:text-xl md:text-2xl font-bold text-cherry-red korean-text">{stat.value}</p>
                   </div>
                 </div>
               )
