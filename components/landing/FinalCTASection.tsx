@@ -114,12 +114,14 @@ export function FinalCTASection() {
                 지금 기부하기
               </Button>
               <Button
+                asChild
                 size="lg"
                 className="w-full sm:w-auto border-2 border-white bg-transparent text-white hover:bg-white hover:text-cherry-red text-base sm:text-lg px-6 sm:px-8 py-5 sm:py-6 h-auto font-semibold transition-all touch-target"
-                onClick={(e) => handleCtaClick(e, '/contact')}
               >
-                <Building className="mr-2 h-4 w-4 sm:h-5 sm:w-5" />
-                파트너로 참여하기
+                <a href="mailto:cherry4pet@gmail.com">
+                  <Building className="mr-2 h-4 w-4 sm:h-5 sm:w-5" />
+                  파트너로 참여하기
+                </a>
               </Button>
             </div>
 
