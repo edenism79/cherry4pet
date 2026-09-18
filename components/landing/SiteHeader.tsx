@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/alert-dialog"
 import Link from 'next/link'
 import Image from 'next/image'
+import { LanguageToggle } from '@/components/common/LanguageToggle'
 
 interface SiteHeaderProps {
   logoUrl?: string | null
@@ -163,22 +164,22 @@ export function SiteHeader({ logoUrl, siteName = 'CHERRY for PET' }: SiteHeaderP
         }`}
         style={{ top: bannerVisible ? '52px' : '0' }}
       >
-      <nav className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-14 sm:h-16 md:h-20">
+      <nav className="w-full px-4 sm:px-6 lg:px-8">
+        <div className="flex items-center justify-between gap-3 h-14 sm:h-16 md:h-20 xl:grid xl:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] xl:gap-5">
           {/* Logo */}
           <Link
             href="/"
-            className="flex items-center cursor-pointer touch-target"
+            className="flex shrink-0 items-center cursor-pointer touch-target xl:justify-self-start"
             onClick={handleLogoClick}
           >
             {logoUrl ? (
-              <div className="relative h-7 sm:h-8 md:h-10" style={{ width: 'auto', aspectRatio: 'auto' }}>
+              <div className="relative h-7 w-[140px] sm:h-8 sm:w-[180px] md:h-10 md:w-[200px]" style={{ aspectRatio: 'auto' }}>
                 <Image
                   src={logoUrl}
                   alt={siteName}
                   width={200}
                   height={40}
-                  className="h-7 sm:h-8 md:h-10 w-auto object-contain"
+                  className="h-7 w-auto max-w-[140px] object-contain sm:h-8 sm:max-w-[180px] md:h-10 md:max-w-[200px]"
                   priority
                 />
               </div>
@@ -195,46 +196,45 @@ export function SiteHeader({ logoUrl, siteName = 'CHERRY for PET' }: SiteHeaderP
           </Link>
 
           {/* Desktop Navigation */}
-          <div className="hidden lg:flex items-center space-x-6 xl:space-x-8">
+          <div className="hidden shrink-0 items-center gap-3 xl:flex xl:justify-self-center 2xl:gap-5">
             {navigation.map((item) => (
               <a
                 key={item.name}
                 href={item.href}
                 onClick={(e) => handleSmoothScroll(e, item.href)}
-                className="text-sm xl:text-base text-gray-700 hover:text-cherry-red font-medium transition-colors cursor-pointer touch-target"
+                className="whitespace-nowrap text-sm text-gray-700 hover:text-cherry-red font-medium transition-colors cursor-pointer touch-target"
               >
                 {item.name}
               </a>
             ))}
           </div>
 
-          {/* CTA Button */}
-          <div className="hidden lg:block">
+          <div className="flex shrink-0 items-center gap-1 xl:justify-self-end xl:gap-3">
+            <LanguageToggle />
             <Button
-              className="bg-cherry-red hover:bg-cherry-deep text-white font-semibold px-5 xl:px-6 py-2 rounded-full text-sm xl:text-base touch-target"
+              className="hidden bg-cherry-red hover:bg-cherry-deep text-white font-semibold px-5 py-2 rounded-full text-sm touch-target whitespace-nowrap xl:inline-flex"
               onClick={(e) => handleCtaClick(e, 'https://cherry.pet/donate')}
             >
               지금 기부하기
             </Button>
+            {/* Mobile Menu Button */}
+            <button
+              className="rounded-lg p-2 transition-colors hover:bg-gray-100 active:bg-gray-200 touch-target xl:hidden"
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              aria-label={isMobileMenuOpen ? "메뉴 닫기" : "메뉴 열기"}
+            >
+              {isMobileMenuOpen ? (
+                <X className="w-6 h-6 text-gray-900" />
+              ) : (
+                <Menu className="w-6 h-6 text-gray-900" />
+              )}
+            </button>
           </div>
-
-          {/* Mobile Menu Button */}
-          <button
-            className="lg:hidden p-2 rounded-lg hover:bg-gray-100 active:bg-gray-200 transition-colors touch-target"
-            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            aria-label={isMobileMenuOpen ? "메뉴 닫기" : "메뉴 열기"}
-          >
-            {isMobileMenuOpen ? (
-              <X className="w-6 h-6 text-gray-900" />
-            ) : (
-              <Menu className="w-6 h-6 text-gray-900" />
-            )}
-          </button>
         </div>
 
         {/* Mobile Menu */}
         {isMobileMenuOpen && (
-          <div className="lg:hidden py-4 border-t border-gray-200 animate-in slide-in-from-top duration-200">
+          <div className="xl:hidden py-4 border-t border-gray-200 animate-in slide-in-from-top duration-200">
             <div className="flex flex-col space-y-1">
               {navigation.map((item) => (
                 <a

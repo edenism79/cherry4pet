@@ -1,0 +1,21 @@
+.english-site {
+  font-family: inherit;
+  word-break: normal;
+  overflow-wrap: break-word;
+}
+
+.english-site :is(h1, h2, h3, h4, p, span, div, a, button, label) {
+  word-break: normal;
+  overflow-wrap: break-word;
+}
+
+.english-site :is(h1, h2) {
+  text-wrap: balance;
+}
+
+@media (max-width: 359px) {
+  .english-site nav {
+    padding-left: 8px;
+    padding-right: 8px;
+  }
+}
